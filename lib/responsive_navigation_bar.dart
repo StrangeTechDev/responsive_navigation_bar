@@ -176,7 +176,7 @@ class ResponsiveNavigationBar extends StatelessWidget {
                 ? 20
                 : 18);
     
-    final buttonIconSize = fontSize ??
+    final buttonIconSize = iconSize ??
         (deviceWidth >= 650
             ? 33
             : deviceWidth >= 375
