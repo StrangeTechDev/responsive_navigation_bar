@@ -1,4 +1,5 @@
 import 'dart:ui';
+import 'dart:math';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -351,7 +352,7 @@ class _Button extends StatelessWidget {
     final showText = active && showActiveButtonText && text != '';
 
     // To align the button-height of non-text buttons
-    final buttonHeight = (textStyle.fontSize ?? 14) * 1.44;
+    final buttonHeight = max(max(textStyle.fontSize ?? 0, iconSize ?? 0), 14) * 1.44;
 
     return TweenAnimationBuilder<int>(
       duration: animationDuration,
