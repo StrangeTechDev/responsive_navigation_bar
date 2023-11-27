@@ -18,6 +18,7 @@ class ResponsiveNavigationBar extends StatelessWidget {
     this.outerPadding = const EdgeInsets.fromLTRB(8, 0, 8, 5),
     this.selectedIndex = 0,
     this.fontSize,
+    this.iconSize,
     this.textStyle = const TextStyle(fontWeight: FontWeight.bold),
     this.activeIconColor = Colors.white,
     this.inactiveIconColor = Colors.white,
@@ -107,6 +108,8 @@ class ResponsiveNavigationBar extends StatelessWidget {
   /// If you specify your own [fontSize], it will NOT be responsive any more
   /// - unless you pass something like above.
   final double? fontSize;
+  
+  final double? iconSize;
 
   /// TextStyle for all buttons.
   ///
@@ -166,7 +169,14 @@ class ResponsiveNavigationBar extends StatelessWidget {
     // [points] from:
     // https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
     final deviceWidth = MediaQuery.of(context).size.width;
-    final buttonFontSize = fontSize ??
+    final buttonFontSize = fontSize ?? textStyle?.fontSize ?? 
+        (deviceWidth >= 650
+            ? 33
+            : deviceWidth >= 375
+                ? 20
+                : 18);
+    
+    final buttonIconSize = fontSize ??
         (deviceWidth >= 650
             ? 33
             : deviceWidth >= 375
@@ -185,7 +195,7 @@ class ResponsiveNavigationBar extends StatelessWidget {
           textStyle: textStyle.copyWith(
               color: button.textColor, fontSize: buttonFontSize),
           icon: button.icon,
-          iconSize: buttonFontSize,
+          iconSize: buttonIconSize,
           activeIconColor: activeIconColor,
           inactiveIconColor: inactiveIconColor,
           animationDuration: animationDuration,
@@ -383,39 +393,40 @@ class _Button extends StatelessWidget {
               padding: padding,
               child: SizedBox(
                 height: buttonHeight,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    if (showText) const SizedBox(width: 5),
-                    Flexible(
-                      child: TweenAnimationBuilder<Color?>(
-                        duration: animationDuration,
-                        tween: ColorTween(
-                          end: active ? activeIconColor : inactiveIconColor,
-                        ),
-                        builder: (context, color, _) {
-                          return Icon(
-                            icon,
-                            size: iconSize,
-                            color: color,
-                          );
-                        },
-                      ),
-                    ),
-                    if (showText) ...[
-                      const SizedBox(width: 5),
-                      Expanded(
-                        flex: 6,
-                        child: Text(
-                          text,
-                          style: textStyle,
-                          textAlign: TextAlign.center,
-                          textScaleFactor: 1,
-                          maxLines: 1,
+                child: Center(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      if (showText) const SizedBox(width: 5),
+                      Flexible(
+                        child: TweenAnimationBuilder<Color?>(
+                          duration: animationDuration,
+                          tween: ColorTween(
+                            end: active ? activeIconColor : inactiveIconColor,
+                          ),
+                          builder: (context, color, _) {
+                            return Icon(
+                              icon,
+                              size: iconSize,
+                              color: color,
+                            );
+                          },
                         ),
                       ),
+                      if (showText) ...[
+                        const SizedBox(width: 5),
+                        Flexible(
+                          child: Text(
+                            text,
+                            style: textStyle,
+                            textAlign: TextAlign.left,
+                            textScaleFactor: 1,
+                            maxLines: 1,
+                          ),
+                        ),
+                      ],
                     ],
-                  ],
+                  ),
                 ),
               ),
             ),
